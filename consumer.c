@@ -3,13 +3,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-/*
-This program provides a possible solution for producer-consumer problem using mutex and semaphore.
-I have used 5 producers and 5 consumers to demonstrate the solution. You can always play with these values.
-*/
 
-#define MaxItems 5 // Maximum items a producer can produce or a consumer can consume
-#define BufferSize 5 // Size of the buffer
+
+#define MaxItems 5
+#define BufferSize 5 
 
 sem_t empty;
 sem_t full;
@@ -18,11 +15,13 @@ int out = 0;
 int buffer[BufferSize];
 pthread_mutex_t mutex;
 
+//producer function creation
+
 void *producer(void *pno)
 {   
     int item;
     for(int i = 0; i < MaxItems; i++) {
-        item = rand(); // Produce an random item
+        item = rand(); // this will produce a random item for me
         sem_wait(&empty);
         pthread_mutex_lock(&mutex);
         buffer[in] = item;
@@ -32,6 +31,8 @@ void *producer(void *pno)
         sem_post(&full);
     }
 }
+
+//consumer function creation
 void *consumer(void *cno)
 {   
     for(int i = 0; i < MaxItems; i++) {
@@ -53,7 +54,7 @@ int main()
     sem_init(&empty,0,BufferSize);
     sem_init(&full,0,0);
 
-    int a[5] = {1,2,3,4,5}; //Just used for numbering the producer and consumer
+    int a[5] = {1,2,3,4,5};
 
     for(int i = 0; i < 5; i++) {
         pthread_create(&pro[i], NULL, (void *)producer, (void *)&a[i]);
